@@ -66,7 +66,7 @@ of biological identifier mappings (ID maps) from online bioinformatics
 services, with caching in localdata repositories for subsequent fast
 retrieval. An ID map is a one-to-many map from one ID type (called
 the primary key) to another (called the secondary key). The services
-currently supported are NetAffx, DAVID, and Ensembl. The package employs
+currently supported are NetAffx and Ensembl. The package employs
 a unified interface for accessing these services, so that the local
 repositories will be easy to create, update, and use. Aside from identifier
 maps themselves, the the service's complete annotation data sets are
@@ -107,23 +107,11 @@ Service class name: AnnotationAffx.
 
 Access method: \Rpackage{AffyCompatible} Bioconductor package.
 
-\item DAVID online query system {[}2,3{]}, \\
-Data source: \href{http://www.bioconductor.org/packages/release/bioc/html/DAVIDQuery.html}{http://www.bioconductor.org/packages/release/bioc/html/DAVIDQuery.html}
-
-
-Service class name: AnnotationDavid.
-
-Access method: \Rpackage{DAVIDQuery} Bioconductor package.
-
-\item Ensembl online query system {[}4,5{]}, accessed using biomaRt R package\\
-Data source: \href{http://www.bioconductor.org/packages/2.2/bioc/html/biomaRt.html}{http://www.bioconductor.org/packages/2.2/bioc/html/biomaRt.html}
-
-
 Service class name: AnnotationEnsembl.
 
 Access method: \Rpackage{biomaRt} Bioconductor package.
 
-\item EnVision online query system {[}6{]}, accessed using the SOAP-based
+\item EnVision online query system {[}4{]}, accessed using the SOAP-based
 Web Services. 
 
 
@@ -147,16 +135,7 @@ Service class name: AnnotationNetxAffx.
 
 Access method: See Appendix A.
 
-\item DAVID knowledge base data repository {[}2,3{]}. 
-
-
-Data source: \href{http://david.abcc.ncifcrf.gov/knowledgebase/DAVID_knowledgebase.html}{http://david.abcc.ncifcrf.gov/knowledgebase/DAVID\_{}knowledgebase.html}). 
-
-Service class name: AnnotationDavidCsv.
-
-Access method: See Appendix B.
-
-\item Ensembl download service {[}5,6{]}.
+\item Ensembl download service {[}3,4{]}.
 
 
 Data source: \href{http://uswest.ensembl.org}{http://uswest.ensembl.org}. 
@@ -171,7 +150,7 @@ Access method: See Appendix C.
 \subsection{User tasks, services, classes and objects}
 
 The package utilizes the R.oo framework for S3 class based development
-({[}7{]}, 
+({[}5{]}, 
 
 \href{http://cran.r-project.org/web/packages/R.oo/index.html}{http://cran.r-project.org/web/packages/R.oo/index.html}),
 which we found to be well suited for the task. As seen in the table
@@ -200,7 +179,7 @@ use corresponding methods.\\
 Some parameters are common for all service object types. 
 \begin{itemize}
 \item cacheFolderName - a subdirectory name where data for given service
-object will be cashed ({}``EnVision'',''DAVID'' etc.)
+object will be cashed ({}``EnVision'')
 \item primaryColumn and secondaryColumn -the column names which a service
 object uses to extract the Id Map from the raw data frame. In case
 primaryColumn/secondaryColumn contain multiple column names, the service
@@ -237,10 +216,6 @@ details). \\
 \hline 
 {\footnotesize AnnotationNetAffx} & {\footnotesize Affymetrix NetAffx batch query system} & {\footnotesize File (Appendix A)}\tabularnewline
 \hline 
-{\footnotesize AnnotationDavid} & {\footnotesize DAVID online query system} & {\footnotesize Query}\tabularnewline
-{\footnotesize (based on DAVIDQuery)} &  & \tabularnewline
-\hline 
-{\footnotesize AnnotationDavidCsv} & {\footnotesize DAVID knowledge base} & {\footnotesize File (Appendix B)}\tabularnewline
 \hline 
 {\footnotesize AnnotationEnsembl} & {\footnotesize Ensembl} & {\footnotesize Query}\tabularnewline
 {\footnotesize (based on biomaRt)} &  & \tabularnewline
@@ -279,7 +254,7 @@ Under the root directory, there is a set of folders each corresponding
 to the data collected by a particular service. The service folder
 name is assigned during the particular service object creation and
 takes a default name if not specified ({}``Ensembl'' for AnnotationEnsembl
-object {}``DAVID'' for AnnotationDavid object etc.). It is possible
+object etc.). It is possible
 to create multiple folders for a given service object type in case
 the folder name specified explicitly thus allowing to cache multiple
 instances of data from the same online resource. This feature allows
@@ -445,7 +420,6 @@ all services implemented within the IdMappingRetrieval package.
 # create service objects
 services <- list();
 services$NetAffx_F <- AnnotationAffx("Affymetrix");
-services$DAVID_Q <- AnnotationDavid("DAVID",species="Homo sapiens");
 
 #collect Id Map data 
 idMapList <- lapply(services, getIdMap,
@@ -468,7 +442,6 @@ idMapList <- lapply(services, getIdMap,
                  force=FALSE, verbose=TRUE);
 names(idMapList);
 idMapList$NetAffx_F[100:110,];
-idMapList$DAVID_Q[100:110,];
 @
 Instead of map objects, the results can be stored as data frames.
 
@@ -479,7 +452,6 @@ dfList <- lapply(services, getDataFrame,
                  force=FALSE, verbose=TRUE);
 names(dfList);
 names(dfList$NetAffx_F);
-names(dfList$DAVID_Q);
 @
 
 
@@ -496,13 +468,13 @@ svm <- ServiceManager(ServiceManager$getDefaultServices());
 names(getServices(svm));
 idMapList <- getIdMapList(svm,
                         arrayType=arrayType,
-                        selection=c("NetAffx_Q","DAVID_Q"),
+                        selection=c("NetAffx_Q"),
                         primaryKey=primaryKey,
                         secondaryKey=secondaryKey, verbose=TRUE);
 #collect complete data frames
 dfList <- getDataFrameList(svm,
                         arrayType=arrayType,
-                        selection=c("NetAffx_Q","DAVID_Q"), verbose=TRUE);
+                        selection=c("NetAffx_Q"), verbose=TRUE);
 @
 
 
@@ -560,26 +532,18 @@ and testing.
 \begin{description}
 \item [{{[}1{]}}] Liu, G., NetAffx: Affymetrix probesets and annotations.
 Nucleic Acids Res. 2003, 31(1):82-6.
-\item [{{[}2{]}}] Huang D.W., Sherman B.T., Tan Q., Kir J., Liu D., Bryant
-D., Guo Y., Stephens R., Baseler M.W., Lane H.C. et al. (2007) DAVID
-Bioinformatics Resources: expanded annotation database and novel algorithms
-to better extract biology from large gene lists. Nucleic Acids Res.,
-35, W169-W175.
-\item [{{[}3{]}}] Huang D.W., Sherman B.T. and Lempicki R.A. (2008) Systematic
-and integrative analysis of large gene lists using DAVID bioinformatics
-resources. Nat. Protoc., doi: 10.1038/nprot.2008.211.
-\item [{{[}4{]}}] Xosé M. Fernández-Suárez and Michael K. Schuster Using
+\item [{{[}2{]}}] Xosé M. Fernández-Suárez and Michael K. Schuster Using
 the Ensembl Genome Server to Browse Genomic Sequence Data. UNIT 1.15
 in Current Protocols in Bioinformatics, Jun 2010. \\
 www.ncbi.nlm.nih.gov/pubmed/20521244
-\item [{{[}5{]}}] Giulietta M Spudich and Xosé M Fernández-Suárez Touring
+\item [{{[}3{]}}] Giulietta M Spudich and Xosé M Fernández-Suárez Touring
 Ensembl: A practical guide to genome browsing BMC Genomics 2010, 11:295
 (11 May 2010)
-\item [{{[}6{]}}] Florian Reisinger, Manuel Corpas, John Hancock, Henning
+\item [{{[}4{]}}] Florian Reisinger, Manuel Corpas, John Hancock, Henning
 Hermjakob, Ewan Birney and Pascal Kahlem. ENFIN - An Integrative Structure
 for Systems Biology. Data Integration in the Life Sciences Lecture
 Notes in Computer Science, 2008, Volume 5109/2008, 132-143, DOI: 10.1007/978-3-540-69828-9\_13 
-\item [{{[}7{]}}] Henrik Bengtsson, The R.oo package - Object-oriented
+\item [{{[}5{]}}] Henrik Bengtsson, The R.oo package - Object-oriented
 programming with references using standard R code, Talk at the DSC
 2003 conference, Wienna, March 22, 2003.
 \end{description}
@@ -640,42 +604,6 @@ the file set interactively.
 \end{enumerate}
 
 \section*{Appendix B}
-
-
-\subsection*{Obtaining the DAVID ID Mapping data files through the DAVID knowledge
-base request form using Homo Sapiens as species and AFFY\_ID and UNIPROT\_ID
-as primary and secondary keys.}
-\begin{enumerate}
-\item Using your Web Browser, open the following url:\\
- \href{http://david.abcc.ncifcrf.gov/knowledgebase/DAVID_knowledgebase.html}{http://david.abcc.ncifcrf.gov/knowledgebase/DAVID\_{}knowledgebase.html} 
-\item Click on the \textquotedblleft{}Request data from the DAVID Knowledgebase!!
-\textquotedblleft{} web page item. The \textquotedblleft{}DAVID KNOWLEDGEBASE
-LOGIN\textquotedblright{} web page will open. If you are not registered
-yet, follow the \textquotedblleft{}registration page\textquotedblright{}
-link to register. Enter your email address used during the registration
-process and then click \textquotedblleft{}Login\textquotedblright{}. 
-\item The license agreement page \textquotedblleft{}NATIONAL INSTITUTES
-OF HEALTH ACADEMIC, GOVERNMENT, NON-PROFIT RIGHT TO USE SOFTWARE AGREEMENT
-for DAVID Knowledgebase 1.0\textquotedblright{} will open. Read the
-agreement and then click \textquotedblleft{}Accept\textquotedblright{}.
-\item The \textquotedblleft{}DAVID Knowledgebase Request\textquotedblright{}
-page will open. Following the instructions define species as \textquotedblleft{}Homo
-Sapiens\textquotedblright{} (Step 1, Select Species), AFFY\_ID as
-a primary key (Central Identifier, Step 2) and UNIPROT\_ID as secondary
-key (Select Annotation Categories/Main Accessions, Step 3). Click
-\textquotedblleft{}Submit\textquotedblright{}. 
-\item The confirmation page containing the summary of your request will
-open. In couple days you will receive notification by email containing
-the link to the download page. 
-\item After downloading the file, the ID Map data can be retrieved by creating
-the AnnotationDavidCsv object with df\_filename slot containing the
-path to the downloaded file and then calling Annotation.getIdMap()
-on this object. If df\_filename is not specified (NULL by default)
-the File Open dialog will popup during the data retrieval allowing
-to specify the file location interactively. 
-\end{enumerate}
-
-\section*{Appendix C}
 
 
 \subsection*{Obtaining the Ensembl ID Mapping data file using the HG-U133\_Plus\_2

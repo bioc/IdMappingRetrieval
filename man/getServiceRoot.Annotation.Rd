@@ -28,15 +28,6 @@
 
 \value{A \code{\link[base]{character}} string containing the path to the service caching directory.}
 
-\examples{
-\dontrun{
-  #get the path to service object caching folder
-  annObj<-AnnotationDavid("DAVID",species="Homo sapiens");
-  getServiceRoot(annObj);
-  #get the path to caching system root directory
-  Annotation$getServiceRoot();
-}}
-
 \seealso{For more information see \code{\link{Annotation}}.}
 
 \author{Alex Lisovich, Roger Day}
