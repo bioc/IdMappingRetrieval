@@ -40,6 +40,7 @@
 \makeatother
 
 \begin{document}
+\SweaveOpts{concordance=TRUE}
 
 \title{The \Rpackage{IdMappingRetrieval} package in Bioconductor: Collecting
 and caching identifier mappings from online sources.}
@@ -314,7 +315,7 @@ As each particular online service uses it's own data format, the data
 frame format will be different for each particular service and the
 query type. If the detailed information on the data frame content
 is desirable, we refer user to the documentation from a particular
-online service provider
+online service provider.
 
 
 \section{Examples}
@@ -344,7 +345,7 @@ and/or folders for file-based services. A typical initialization script
 for a data retrieval session is given below:
 
 \begin{singlespace}
-<<chunk1,keep.source=TRUE>>=
+<<chunk1,eval=FALSE,keep.source=TRUE>>=
 library(IdMappingRetrieval)
 # setup verbosity level,array type and DB keys
 arrayType <- "HG-U133_Plus_2";
@@ -367,23 +368,35 @@ below.
 \begin{singlespace}
 <<chunk2,eval=FALSE,keep.source=TRUE>>=
 #create Affymetrix service object
-annAffx_Q <- AnnotationAffx(cacheFolderName="Affymetrix",
-                         primaryColumn="Probe.Set.ID",
-                         secondaryColumn="SwissProt",
-                         swap=TRUE);
+annAffx_Q <- tryCatch(
+  AnnotationAffx(cacheFolderName="Affymetrix",
+                 primaryColumn="Probe.Set.ID",
+                 secondaryColumn="SwissProt",
+                 swap=TRUE) );
 #create Ensembl file-based service object
-annEnsemblCsv <- AnnotationEnsemblCsv(cacheFolderName="EnsemblCsv",
-                         primaryColumn=c("UniProt.SwissProt.Accession",
-                                         "UniProt.TrEMBL.Accession"),
-                         secondaryColumn=NA,
-                         swap=FALSE, full.merge=TRUE,
-                         df_filename="ENSEMBL_biomart_export.txt");
+annEnsemblCsv <- tryCatch(
+  AnnotationEnsemblCsv(
+    cacheFolderName="EnsemblCsv",
+    primaryColumn=c("UniProt.SwissProt.Accession",
+                    "UniProt.TrEMBL.Accession"),
+    secondaryColumn=NA,
+    swap=FALSE, full.merge=TRUE,
+    df_filename="ENSEMBL_biomart_export.txt") );
 #create Envision service object
-annEnvision <- AnnotationEnvision(cacheFolderName="EnVision",
-                         primaryColumn=c("UniProt.SwissProt.Accession", 
-                                         "UniProt.TrEMBL.Accession"),
-                         secondaryColumn=NA,
-                         swap=TRUE, species="Homo sapiens", full.merge=TRUE);
+annEnvision <- tryCatch(
+  AnnotationEnvision(
+    cacheFolderName="EnVision",
+    primaryColumn=c("UniProt.SwissProt.Accession",
+                    "UniProt.TrEMBL.Accession"),
+    secondaryColumn=NA,
+    swap=TRUE, species="Homo sapiens", full.merge=TRUE) );
+errorSummary = sapply(c('annAffx_Q', 'annEnsemblCsv', ''), function(service) 
+  inherits(service, "error") )
+if(any(errorSummary)) 
+  errorMesg = paste("(In this vignette build, the service(s) ", names(which(errorSummary)), "timed out.)"  )
+else
+  errorMesg = "(All services were successfully retrieved.)"
+
 @
 \end{singlespace}
 
@@ -416,7 +429,7 @@ methods for Annotation and ServiceManager objects respectively.
 The script below illustrates the process of collecting such data from
 all services implemented within the IdMappingRetrieval package.
 
-<<chunk3a,keep.source=TRUE>>=
+<<chunk3a,eval=FALSE,keep.source=TRUE>>=
 # create service objects
 services <- list();
 services$NetAffx_F <- AnnotationAffx("Affymetrix");
@@ -433,7 +446,7 @@ idMapList <- lapply(services, getIdMap,
 
 This initial retrieval takes some time. But repeating the retrieval is fast due to caching.
 
-<<chunk3b,keep.source=TRUE>>=
+<<chunk3b,eval=FALSE,keep.source=TRUE>>=
 
 idMapList <- lapply(services, getIdMap,
                  arrayType=arrayType,
@@ -445,7 +458,7 @@ idMapList$NetAffx_F[100:110,];
 @
 Instead of map objects, the results can be stored as data frames.
 
-<<chunk3c,keep.source=TRUE>>=
+<<chunk3c,eval=FALSE,keep.source=TRUE>>=
 #collect complete data frames
 dfList <- lapply(services, getDataFrame,
                  arrayType=arrayType,
@@ -462,7 +475,7 @@ object, a container for service objects. The \Rclass{ServiceManager}
 class generates the full set of default services automatically. The
 following script repeats the work of the previous code, more compactly. 
 
-<<chunk4,keep.source=TRUE>>=
+<<chunk4,eval=FALSE,keep.source=TRUE>>=
 #create service manager object containing set of default services
 svm <- ServiceManager(ServiceManager$getDefaultServices());
 names(getServices(svm));
@@ -500,7 +513,7 @@ dfList <- ServiceManager$getDataFrameList(
                    selection="menu", verbose=TRUE);
 @
 
-<<chunk6,results=hide,echo=FALSE,keep.source=FALSE>>=
+<<chunk6,eval=FALSE,results=hide,echo=FALSE,keep.source=FALSE>>=
 #remove caching directory to prevent including it into tar.gz during build
 unlink("./annotationData",recursive=TRUE);
 @
@@ -532,11 +545,11 @@ and testing.
 \begin{description}
 \item [{{[}1{]}}] Liu, G., NetAffx: Affymetrix probesets and annotations.
 Nucleic Acids Res. 2003, 31(1):82-6.
-\item [{{[}2{]}}] Xosé M. Fernández-Suárez and Michael K. Schuster Using
+\item [{{[}2{]}}] Xos? M. Fern?ndez-Su?rez and Michael K. Schuster Using
 the Ensembl Genome Server to Browse Genomic Sequence Data. UNIT 1.15
 in Current Protocols in Bioinformatics, Jun 2010. \\
 www.ncbi.nlm.nih.gov/pubmed/20521244
-\item [{{[}3{]}}] Giulietta M Spudich and Xosé M Fernández-Suárez Touring
+\item [{{[}3{]}}] Giulietta M Spudich and Xos? M Fern?ndez-Su?rez Touring
 Ensembl: A practical guide to genome browsing BMC Genomics 2010, 11:295
 (11 May 2010)
 \item [{{[}4{]}}] Florian Reisinger, Manuel Corpas, John Hancock, Henning
