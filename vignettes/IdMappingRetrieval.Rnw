@@ -392,9 +392,9 @@ annEnvision <- tryCatch(
     swap=TRUE, species="Homo sapiens", full.merge=TRUE) );
 errorSummary = sapply(c('annAffx_Q', 'annEnsemblCsv', ''), function(service) 
   inherits(service, "error") )
-if(any(errorSummary)) 
-  errorMesg = paste("(In this vignette build, the service(s) ", names(which(errorSummary)), "timed out.)"  )
-else
+errorMesg = ifelse(any(errorSummary), 
+  paste("(In this vignette build, the service(s) ",
+        names(which(errorSummary)), "timed out.)"),
   errorMesg = "(All services were successfully retrieved.)"
 
 @
