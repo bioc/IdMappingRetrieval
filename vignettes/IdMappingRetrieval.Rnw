@@ -393,10 +393,10 @@ annEnvision <- tryCatch(
 errorSummary = sapply(c('annAffx_Q', 'annEnsemblCsv', ''), function(service) 
   inherits(service, "error") )
 errorMesg = ifelse(any(errorSummary), 
-  paste("(In this vignette build, the service(s) ",
+      paste("(In this vignette build, the service(s) ",
         names(which(errorSummary)), "timed out.)"),
-  errorMesg = "(All services were successfully retrieved.)"
-
+      errorMesg = "(All services were successfully retrieved.)"
+  )
 @
 \end{singlespace}
 
