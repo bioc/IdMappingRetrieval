@@ -1,7 +1,7 @@
 Package: IdMappingRetrieval
 Type: Package
 Title: ID Mapping Data Retrieval
-Version: 1.25.0
+Version: 1.25.1
 Date:2017-04-24 
 Author: Alex Lisovich, Roger Day
 Maintainer: Alex Lisovich <alex.lisovich@gmail.com>, Roger Day <day01@pitt.edu>
@@ -17,3 +17,4 @@ Collate: 'annotation.R' 'annotationAffx.R' 'annotationDataRoot.R'
         'annotationEnvision.R' 'annotationNetAffx.R' 'compatibility.R'
         'IdMappingRetrieval-package.R' 'serviceManager.R'
 biocViews: Annotation, MultipleComparison
+PackageStatus: Deprecated
