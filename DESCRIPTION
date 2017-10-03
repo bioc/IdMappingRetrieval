@@ -11,8 +11,7 @@ Depends: R.oo, XML, RCurl, rChoiceDialogs
 Imports: biomaRt, ENVISIONQuery, AffyCompatible,
         R.methodsS3, utils
 LazyLoad: yes
-Collate: 'annotation.R' 'annotationAffx.R' 'annotationDataRoot.R'
-        'zzz.R' 
+Collate: 'annotation.R' 'annotationAffx.R' 'annotationDataRoot.R' 
         'annotationEnsembl.R' 'annotationEnsemblCsv.R'
         'annotationEnvision.R' 'annotationNetAffx.R' 'compatibility.R'
         'IdMappingRetrieval-package.R' 'serviceManager.R'
