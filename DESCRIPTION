@@ -1,7 +1,7 @@
 Package: IdMappingRetrieval
 Type: Package
 Title: ID Mapping Data Retrieval
-Version: 1.30.0
+Version: 1.31.0
 Date:2017-04-24 
 Author: Alex Lisovich, Roger Day
 Maintainer: Alex Lisovich <alex.lisovich@gmail.com>, Roger Day <day01@pitt.edu>
